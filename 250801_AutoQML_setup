@@ -1,0 +1,43 @@
+AutoQML 라이브러리를 로컬에서 설치한 후, `AutoML` 클래스를 import하려고 했지만 `ImportError`가 발생하여 작동 테스트가 어려웠습니다. 이후 `TabularClassification` 클래스를 사용하여 문제를 해결하고, 
+작동 테스트를 위한 임의 데이터를 활용한 코드 실행까지 성공하셨습니다.
+
+---
+
+## ❗ 원인
+
+```python
+from autoqml.automl import AutoML
+```
+
+이 구문에서 `ImportError`가 발생한 이유는 `AutoML`이 **추상 클래스(abstract class)**로 정의되어 있기 때문입니다.
+
+---
+
+## 🔍 이유
+
+- `AutoML` 클래스는 직접 사용하기 위한 것이 아니라, `TabularClassification`, `TabularRegression` 등 구체적인 모델 클래스들이 상속받아 사용하는 **기초 설계 클래스**입니다.
+- 추상 클래스는 `abc.ABC`를 상속받아 `NotImplementedError`를 포함한 메서드를 정의하며, 직접 인스턴스화하거나 import해서 사용하는 것이 불가능합니다.
+
+---
+
+## ⚠ 결과
+
+- `AutoML`을 직접 import하려고 하면 `ImportError`가 발생합니다.
+- 사용 가능한 실제 모델 클래스(`TabularClassification` 등)를 import해야 정상적으로 작동합니다.
+
+---
+
+## ✅ 해결법
+
+1. **올바른 클래스 import**:
+   ```python
+   from autoqml.automl import TabularClassification
+   ```
+
+2. **작동 테스트용 코드 실행**:
+   - 임의의 데이터를 생성하여 `AutoQMLFitCommand`를 구성하고 `fit()` 및 `predict()` 메서드를 실행함으로써 AutoQML 파이프라인이 정상적으로 작동하는지 확인했습니다.
+
+3. **추상 클래스는 직접 사용하지 않기**:
+   - `AutoML`은 상속용 클래스이므로 직접 import하거나 인스턴스화하지 않습니다.
+
+---
