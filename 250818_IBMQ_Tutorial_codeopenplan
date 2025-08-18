@@ -1,5 +1,10 @@
 ibmq를 구동하기 위한 튜터리얼 코드 openplan으로 구동하여야 하는데. 제공된 코드의 변수를 조정해도 한계가 있음.
 -> 알고리즘 간소화? 
+--> local하믄 되었던것!! 
 
 QAOA ) https://quantum.cloud.ibm.com/docs/en/tutorials/quantum-approximate-optimization-algorithm
 VQE ) https://quantum.cloud.ibm.com/docs/en/tutorials/spin-chain-vqe
+
+1. QAOA 노트북의 경우, QiskitRuntimeService를 AerSimulator를 사용하는 로컬 Estimator
+
+2. VQE 노트북도 마찬가지로 QiskitRuntimeService를 로컬 Estimator로 변경
