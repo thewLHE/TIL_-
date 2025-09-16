@@ -1,0 +1,61 @@
+1. streamlit -> Streamlit.app 배포하기 쉽당
+2. 기술 계획서 or 포폴용 시드 처럼 정리하기 괜찮은 방식 찾은 듯
+-> chemflow-paper_250916_.docx 이거 기반으로 template만들어 보자
+3. 로컬 컴퓨터(여러개의 분리된 컴퓨터)들 한개의 나스에 백업하는 방안
+4. 폴더(프로젝트)내 작업 상황 노팅 해두는 방식?
+
+---
+
+# 프로젝트 폴더 변경 기록 자동화 정리
+
+프로젝트 폴더 전체에서 어떤 파일이 언제 바뀌었는지 자동으로 기록하는 시스템을 만드는 방법을 정리합니다. 텍스트 편집기를 열지 않고도, 변경사항을 시간순으로 남길 수 있습니다. 윈도우/리눅스 모두 적용 가능한 다양한 방법을 아래에 소개합니다.
+
+## 1. Git + 커밋 메시지 자동화
+가장 강력하고 범용적인 방식입니다. Git을 사용하면 파일 변경 내역, 시간, 변경된 파일까지 자동으로 기록됩니다.
+- 프로젝트 폴더를 Git 저장소로 초기화:
+  ```bash
+  git init
+  ```
+- 변경사항 자동 커밋 스크립트:
+  ```bash
+  git add .
+  git commit -m "$(date '+%Y-%m-%d %H:%M') 작업 자동 기록"
+  ```
+- `.bat` 또는 `.sh`로 만들어두면 클릭 한 번으로 변경사항이 시간과 함께 기록됩니다.
+
+## 2. 리눅스: `watch` + `diff` + 로그 파일 기록
+리눅스에서는 `watch` 명령어와 `diff`를 활용해 주기적으로 변경사항을 감지하고 기록할 수 있습니다.
+- 예시 스크립트:
+  ```bash
+  #!/bin/bash
+  TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+  diff -qr ./ ./백업폴더 | tee -a 작업로그.txt
+  echo "[$TIMESTAMP] 변경사항 기록 완료" >> 작업로그.txt
+  cp -r ./ ./백업폴더
+  ```
+- `cron`이나 `watch`로 주기적으로 실행하면 자동 기록됩니다.
+
+## 3. 윈도우: PowerShell + 파일 변경 감지
+윈도우에서는 PowerShell로 파일 변경 감지 후 로그 기록이 가능합니다.
+- 예시 PowerShell 스크립트:
+  ```powershell
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  $changes = Get-ChildItem -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-10) }
+  $log = "$timestamp 변경된 파일:`n" + ($changes | ForEach-Object { $_.FullName }) -join "`n"
+  Add-Content -Path "작업로그.txt" -Value $log
+  ```
+- 작업 스케줄러에 등록하면 자동으로 실행됩니다.
+
+## 4. GUI 기반 툴 (옵션)
+- **Obsidian**: 마크다운 기반으로 작업 로그를 남기기 좋음
+- **Jira / Trello / ClickUp**: 프로젝트 관리 툴로 변경사항 기록 가능
+- **Dropbox / Syncthing**: 파일 변경 이력 자동 기록 기능 있음
+
+## 보너스: 로그 예시 포맷
+```text
+[2025-09-16 14:50]
+변경된 파일:
+- /project/src/main.py
+- /project/assets/logo.png
+작업 내용: 이미지 교체 및 코드 리팩토링
+```
