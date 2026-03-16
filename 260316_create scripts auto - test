@@ -1,0 +1,17 @@
+# SubtitleEdit 적용 가이드라인
+[post_process.py 출력 SRT]
+         |
+         v
+SubtitleEdit File > Open
+         |
+         v
+Tools > Fix common errors          <- 자동 교정 1차
+         |
+         v
+Synchronization > Adjust all times <- 오프셋 보정
+         |
+         v
+Video > Generate waveform          <- 파형 기반 싱크 확인
+         |
+         v
+File > Save as > SRT
